@@ -36,7 +36,7 @@ public class TimedRotationPolicy implements FileRotationPolicy {
      * @param offset current offset of file being written
      * @return true if a file rotation should be performed
      */
-    @Override
+   // @Override
     public boolean mark(Tuple tuple, long offset) {
         return false;
     }
@@ -44,7 +44,7 @@ public class TimedRotationPolicy implements FileRotationPolicy {
     /**
      * Called after the HdfsBolt rotates a file.
      */
-    @Override
+   // @Override
     public void reset() {
 
     }

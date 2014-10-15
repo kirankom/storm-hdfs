@@ -17,7 +17,7 @@ public class MoveFileAction implements RotationAction {
         return this;
     }
 
-    @Override
+   // @Override
     public void execute(FileSystem fileSystem, Path filePath) throws IOException {
         Path destPath = new Path(destination, filePath.getName());
         LOG.info("Moving file {} to {}", filePath, destPath);

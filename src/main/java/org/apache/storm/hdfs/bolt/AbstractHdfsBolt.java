@@ -126,7 +126,7 @@ public abstract class AbstractHdfsBolt extends BaseRichBolt {
         }
     }
 
-    @Override
+    //@Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
     }
 

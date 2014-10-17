@@ -79,6 +79,7 @@ public class ORCFileBolt extends AbstractHdfsBolt {
 
 	void closeOutputFile() throws IOException {
 		writer.close();
+		
 
 	}
 
@@ -109,12 +110,12 @@ public class ORCFileBolt extends AbstractHdfsBolt {
 						ObjectInspectorFactory.ObjectInspectorOptions.JAVA);
 
 		opts = OrcFile.writerOptions(config);
-		opts.stripeSize(1024*1024*30);
+		opts.stripeSize(1024*1024*3);
 		opts.blockPadding(false);
 		opts.compress(CompressionKind.SNAPPY);
 		opts.inspector(inspector);
 		opts.rowIndexStride(0);
-		opts.bufferSize(1024*1024);
+		opts.bufferSize(1024*1024*3);
 
 	}
 	

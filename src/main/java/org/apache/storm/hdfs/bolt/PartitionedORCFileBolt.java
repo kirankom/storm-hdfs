@@ -2,10 +2,7 @@ package org.apache.storm.hdfs.bolt;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -23,8 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-
 import backtype.storm.task.OutputCollector;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.tuple.Tuple;
@@ -37,7 +32,6 @@ public class PartitionedORCFileBolt extends AbstractHdfsBolt {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory
 			.getLogger(PartitionedORCFileBolt.class);
-	private Writer writer = null;
 	private Map<String, Writer> writerMap = null;
 	private Map<String, Path> filePathMap = null;
 	private Class recordClass = null; // Represents Rows to be
@@ -46,7 +40,7 @@ public class PartitionedORCFileBolt extends AbstractHdfsBolt {
 	private OrcFile.WriterOptions opts;
 	private String workingPath = null;
 	private String finalPath = null;
-	private long synctime=System.currentTimeMillis();
+	private long synctime = System.currentTimeMillis();
 
 	public PartitionedORCFileBolt withWorkingPath(String path) {
 		this.workingPath = path;
@@ -114,23 +108,19 @@ public class PartitionedORCFileBolt extends AbstractHdfsBolt {
 		Writer retVal = writerMap.get(partitionName);
 
 		if (null == retVal) {
-
 			retVal = allocateWriter(partitionName);
 			writerMap.put(partitionName, retVal);
-
 		}
 
 		return retVal;
 	}
 
 	private Writer allocateWriter(String partitionString) {
-		// TODO Auto-generated method stub
 
 		Path p = new Path(this.fsUrl + workingPath + partitionString,
 				this.fileNameFormat.getName(this.rotation,
 						System.currentTimeMillis()));
 
-		// HardCoded to Static values for now
 		Writer writer = null;
 		try {
 			writer = OrcFile.createWriter(p, opts);
@@ -171,6 +161,8 @@ public class PartitionedORCFileBolt extends AbstractHdfsBolt {
 				.getReflectionObjectInspector(recordClass,
 						ObjectInspectorFactory.ObjectInspectorOptions.JAVA);
 
+		// opts should be made configurable
+
 		opts = OrcFile.writerOptions(config);
 		opts.stripeSize(1024 * 1024 * 64);
 		opts.blockPadding(true);
@@ -205,9 +197,10 @@ public class PartitionedORCFileBolt extends AbstractHdfsBolt {
 							// as rows
 
 			if (this.syncPolicy.mark(tuple, this.offset)) {
-				LOG.info("Sync took {} milliseconds",System.currentTimeMillis() - synctime);
+				LOG.info("Sync took {} milliseconds",
+						System.currentTimeMillis() - synctime);
 				synctime = System.currentTimeMillis();
-				
+
 				this.syncPolicy.reset();
 			}
 		}
